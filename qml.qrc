@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>WingletGlyph.qml</file>
+        <file>Scatterplot.qml</file>
+        <file>PieGlyph.qml</file>
+        <file>PieCompareGlyph.qml</file>
+        <file>Overview.qml</file>
+    </qresource>
+</RCC>
