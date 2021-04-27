@@ -54,20 +54,15 @@ ApplicationWindow {
         Item {
             id: homeTab
             Overview {
-                ensembleMembers: root.ensembleData
+                ensembleData: root.ensembleData
                 anchors.fill: parent
             }
         }
         Item {
             id: discoverTab
-            Scatterplot {
-                ensembleMembers: root.ensembleData
-                glyphType: Scatterplot.GlyphType.Compare
+            DataCategories {
+                ensembleData: root.ensembleData
                 anchors.fill: parent
-                onGlyphClicked: {
-                    footerStatus.text = `Clicked on Ensemble-Member ${memberId} (Cluster ${clusterId}:${clusterValue})`
-                }
-
             }
         }
         Item {
@@ -79,9 +74,20 @@ ApplicationWindow {
     Component.onCompleted: {
         Promise.all([
             loadDRData("data/exportSpecPC.txt"),
-            loadClusterData("data/KMeans_5_Clusters_all.txt")]
-        ).then(([drData, clusterData]) => {
-            ensembleData = drData.map((_, index) => ({ dr: drData[index], cluster: clusterData[index] }))
+            loadClusterData("data/KMeans_5_Clusters_all.txt"),
+            loadClusterData("data/Spectral_8_Clusters_all.txt")]
+        ).then(([pca, kmeans, spectral]) => {
+            ensembleData = pca.map((_, index) => ({
+                dr: [
+                    { name: "PCA", data: pca[index] },
+                    { name: "t-SNE", data: pca[index] },
+                    { name: "UMAP", data: pca[index] }
+                ],
+                cluster: [
+                    { name: "k-Means", data: kmeans[index] },
+                    { name: "Spectral", data: spectral[index] }
+                ]
+            }))
         })
     }
     function loadFile(filename: string) {

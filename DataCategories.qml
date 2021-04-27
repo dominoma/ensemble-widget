@@ -17,6 +17,7 @@ Page {
         selectedMember: toolbar.selectedMember
         selectedClustering: toolbar.selectedClustering
 
+        glyphType: Scatterplot.GlyphType.Compare
         onGlyphClicked: {
             toolbar.selectedMember = selectedMember === memberId ? -1 : memberId
         }
@@ -35,6 +36,5 @@ Page {
         }
 
     }
-
 
 }

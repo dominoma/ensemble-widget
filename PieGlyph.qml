@@ -6,28 +6,15 @@ Item {
     property var clusterings
     property int selectedClustering: 0
     property var colors: ["orange", "red", "cyan", "yellow", "green"]
-    property int displayStyle: PieGlyph.DisplayStyle.Normal
+    property bool selected: false
     property int memberId: 0
 
     signal clicked(var mouse, int clusterId, int clusterValue)
-
-    Rectangle {
-        anchors.fill: parent
-        radius: width
-        color: "white"
-    }
-
-    enum DisplayStyle {
-        Normal,
-        Emphasized,
-        Deemphasized
-    }
 
     Canvas {
         id: canvas
         anchors.fill: parent
         antialiasing: true
-        opacity: displayStyle === PieGlyph.DisplayStyle.Deemphasized ? 0.2 : 1
 
         MouseArea {
             anchors.fill: parent
@@ -90,7 +77,7 @@ Item {
             ctx.fill()
             ctx.stroke()
 
-            if(root.displayStyle === PieGlyph.DisplayStyle.Emphasized) {
+            if(root.selected) {
                 ctx.fillStyle = "black"
                 ctx.font = `bold ${width / 3}px monospace Arial`;
                 ctx.textAlign = "center";

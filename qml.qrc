@@ -6,5 +6,7 @@
         <file>PieGlyph.qml</file>
         <file>PieCompareGlyph.qml</file>
         <file>Overview.qml</file>
+        <file>DataCategories.qml</file>
+        <file>ScatterToolbar.qml</file>
     </qresource>
 </RCC>

@@ -13,6 +13,9 @@ Item {
     property int selectedClustering: 0
     property int glyphType: Scatterplot.GlyphType.Normal
     property int selectedMember: -1
+    property string selectedDRAlg: ""
+    property string selectedClusteringAlg: ""
+    property var colors: ["orange", "red", "cyan", "yellow", "green", "pink", "blue", "blueviolet"]
 
     signal glyphClicked(var mouse, int memberId, int clusterId, int clusterValue)
 
@@ -21,24 +24,35 @@ Item {
             const bounds = getBounds()
             const xPos = (x) => (x - bounds.minX) / (bounds.maxX - bounds.minX)
             const yPos = (y) => (y - bounds.minY) / (bounds.maxY - bounds.minY)
-            const points = ensembleMembers.map((member, index) => ({
-                x: xPos(member.dr[0].x),
-                y: yPos(member.dr[0].y),
-                index,
-                clusterings: member.cluster
-            }))
+            const points = ensembleMembers.map((member, index) => {
+                return {
+                    x: xPos(member.dr[0].x),
+                    y: yPos(member.dr[0].y),
+                    index,
+                    clusterings: member.cluster
+                }
+            })
             drawPoints(points)
         }
     }
     ListModel {
         id: pointsModel
     }
+    Rectangle {
+        visible: selectedMember !== -1
+        anchors.fill: parent
+        color: "white"
+        opacity: 0.8
+        z: 2
+    }
+
     Component {
         id: pieCompareGlyph
         PieCompareGlyph {
             selectedClustering: scatterplot.selectedClustering
             clusterings: JSON.parse(parent.clusterings).slice(0, 3)
             anchors.fill: parent
+            colors: scatterplot.colors
 
             onClicked: {
                 scatterplot.glyphClicked(mouse, memberId, clusterId, clusterValue)
@@ -51,8 +65,9 @@ Item {
             selectedClustering: scatterplot.selectedClustering
             clusterings: JSON.parse(parent.clusterings)
             anchors.fill: parent
+            colors: scatterplot.colors
 
-            displayStyle: parent.displayStyle
+            selected: parent.selected
             memberId: parent.memberId
 
             onClicked: {
@@ -67,17 +82,13 @@ Item {
         delegate: Loader {
             readonly property int memberId: model.index
             readonly property string clusterings: model.clusterings
-            readonly property int displayStyle: scatterplot.selectedMember === -1
-                ? PieGlyph.DisplayStyle.Normal
-                : scatterplot.selectedMember === memberId
-                      ? PieGlyph.DisplayStyle.Emphasized
-                      : PieGlyph.DisplayStyle.Deemphasized
+            readonly property bool selected: scatterplot.selectedMember === memberId
 
             x: model.x * (scatterplot.width - 2 * glyphSize) + glyphSize - width / 2
             y: model.y * (scatterplot.height - 2 * glyphSize) + glyphSize - height / 2
-            z: displayStyle === PieGlyph.DisplayStyle.Emphasized ? 10 : 1
-            width: displayStyle === PieGlyph.DisplayStyle.Emphasized ? 1.5 * glyphSize : glyphSize
-            height: displayStyle === PieGlyph.DisplayStyle.Emphasized ? 1.5 * glyphSize : glyphSize
+            z: selected ? 10 : 1
+            width: selected ? 1.5 * glyphSize : glyphSize
+            height: selected ? 1.5 * glyphSize : glyphSize
 
             sourceComponent: scatterplot.glyphType === Scatterplot.GlyphType.Normal ? pieGlyph : pieCompareGlyph
         }
@@ -95,6 +106,8 @@ Item {
         }
 
     }
+
+
     function getBounds() {
         if(!ensembleMembers.length) {
             return {}
