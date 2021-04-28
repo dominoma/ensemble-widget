@@ -54,6 +54,10 @@ Item {
             height: selected ? 1.5 * glyphSize : glyphSize
 
             sourceComponent: root.glyph
+
+            onLoaded: {
+                item.anchors.fill = this
+            }
         }
     }
 

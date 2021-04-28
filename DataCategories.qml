@@ -17,17 +17,15 @@ Page {
         selectedMember: toolbar.selectedMember
         selectedClustering: toolbar.selectedClustering
 
-        glyph: Component {
-            PieCompareGlyph {
-                selectedClustering: toolbar.selectedClustering
-                clusterings: JSON.parse(parent.clusterings).slice(0, 3)
-                anchors.fill: parent
+        glyph: PieCompareGlyph {
+            selectedClustering: toolbar.selectedClustering
+            clusterings: JSON.parse(parent.clusterings).slice(0, 3)
 
-                onClicked: {
-                    toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
-                }
+            onClicked: {
+                toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
             }
         }
+
 
         function getEnsembleMembers() {
             if(!toolbar.selectedDRAlg || !toolbar.selectedClusteringAlg) {

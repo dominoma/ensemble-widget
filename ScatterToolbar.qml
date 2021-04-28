@@ -12,13 +12,14 @@ ToolBar {
     property alias selectedClusteringAlg: clusteringAlgSelector.currentText
     property alias uncertaintyEnabled: uncertaintyEnabledBox.checked
 
-    RowLayout {
+    Flow {
         anchors.fill: parent
         anchors.leftMargin: 10
         Label {
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
             text: "Selected Member:"
+            height: 40
         }
         SpinBox {
             id: memberSpinner
@@ -31,18 +32,21 @@ ToolBar {
             validator: RegExpValidator {
                 regExp: /(None|-?\d+)/
             }
+            height: 40
         }
-        ToolSeparator {}
+        ToolSeparator { height: 40 }
         Label {
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
             text: "Clustering:"
+            height: 40
         }
         SpinBox {
             id: clusteringSpinner
             from: 0
             to: getClusteringCount()
             editable: true
+            height: 40
             function getClusteringCount() {
                 if(!ensembleData.length || !selectedClusteringAlg) {
                     return 0
@@ -50,15 +54,17 @@ ToolBar {
                 return root.getClusterData(ensembleData[0]).data.length
             }
         }
-        ToolSeparator {}
+        ToolSeparator { height: 40 }
         Label {
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
             text: "DR-Algorithm:"
+            height: 40
         }
         ComboBox {
             id: drAlgSelector
             model: getAlgNames()
+            height: 40
 
             function getAlgNames() {
                 if(!ensembleData.length) {
@@ -67,11 +73,12 @@ ToolBar {
                 return ensembleData[0].dr.map(({ name }) => name)
             }
         }
-        ToolSeparator {}
+        ToolSeparator { height: 40 }
         Label {
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
             text: "Clustering-Algorithm:"
+            height: 40
         }
         ComboBox {
             id: clusteringAlgSelector
@@ -84,14 +91,15 @@ ToolBar {
                 return ensembleData[0].cluster.map(({ name }) => name)
             }
         }
-        ToolSeparator {}
+        ToolSeparator { height: 40 }
         CheckBox {
             id: uncertaintyEnabledBox
             text: "Show Uncertainty"
-
+            height: 40
         }
         Label {
             id: footerStatus
+            height: 40
             elide: Label.ElideRight
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
