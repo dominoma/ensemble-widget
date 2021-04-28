@@ -9,6 +9,7 @@ Page {
     header: ScatterToolbar {
         id: toolbar
         ensembleData: root.ensembleData
+        uncertaintyEnabled: true
     }
     Scatterplot {
         ensembleMembers: getEnsembleMembers()
@@ -17,11 +18,23 @@ Page {
         selectedMember: toolbar.selectedMember
         selectedClustering: toolbar.selectedClustering
 
-        onGlyphClicked: {
-            toolbar.selectedMember = selectedMember === memberId ? -1 : memberId
+        glyph: Component {
+            PieGlyph {
+                selectedClustering: toolbar.selectedClustering
+                clusterings: JSON.parse(parent.clusterings)
+                anchors.fill: parent
+                colors: ["orange", "red", "cyan", "yellow", "green", "pink", "blue", "blueviolet"]
+
+                showUncertainty: toolbar.uncertaintyEnabled
+
+                selected: parent.selected
+                memberId: parent.memberId
+
+                onClicked: {
+                    toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
+                }
+            }
         }
-
-
 
         function getEnsembleMembers() {
             if(!toolbar.selectedDRAlg || !toolbar.selectedClusteringAlg) {
@@ -35,6 +48,4 @@ Page {
         }
 
     }
-
-
 }

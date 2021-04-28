@@ -1,23 +1,15 @@
 import QtQuick 2.0
 
 Item {
-    id: scatterplot
-
-    enum GlyphType {
-        Normal,
-        Compare
-    }
+    id: root
 
     property var ensembleMembers: []
     property int glyphSize: 40
     property int selectedClustering: 0
-    property int glyphType: Scatterplot.GlyphType.Normal
     property int selectedMember: -1
     property string selectedDRAlg: ""
     property string selectedClusteringAlg: ""
-    property var colors: ["orange", "red", "cyan", "yellow", "green", "pink", "blue", "blueviolet"]
-
-    signal glyphClicked(var mouse, int memberId, int clusterId, int clusterValue)
+    property Component glyph
 
     onEnsembleMembersChanged: {
         if(ensembleMembers && ensembleMembers.length) {
@@ -46,35 +38,6 @@ Item {
         z: 2
     }
 
-    Component {
-        id: pieCompareGlyph
-        PieCompareGlyph {
-            selectedClustering: scatterplot.selectedClustering
-            clusterings: JSON.parse(parent.clusterings).slice(0, 3)
-            anchors.fill: parent
-            colors: scatterplot.colors
-
-            onClicked: {
-                scatterplot.glyphClicked(mouse, memberId, clusterId, clusterValue)
-            }
-        }
-    }
-    Component {
-        id: pieGlyph
-        PieGlyph {
-            selectedClustering: scatterplot.selectedClustering
-            clusterings: JSON.parse(parent.clusterings)
-            anchors.fill: parent
-            colors: scatterplot.colors
-
-            selected: parent.selected
-            memberId: parent.memberId
-
-            onClicked: {
-                scatterplot.glyphClicked(mouse, memberId, clusterId, clusterValue)
-            }
-        }
-    }
     Repeater {
         id: pointsView
         anchors.fill: parent
@@ -82,15 +45,15 @@ Item {
         delegate: Loader {
             readonly property int memberId: model.index
             readonly property string clusterings: model.clusterings
-            readonly property bool selected: scatterplot.selectedMember === memberId
+            readonly property bool selected: root.selectedMember === memberId
 
-            x: model.x * (scatterplot.width - 2 * glyphSize) + glyphSize - width / 2
-            y: model.y * (scatterplot.height - 2 * glyphSize) + glyphSize - height / 2
+            x: model.x * (root.width - 2 * glyphSize) + glyphSize - width / 2
+            y: model.y * (root.height - 2 * glyphSize) + glyphSize - height / 2
             z: selected ? 10 : 1
             width: selected ? 1.5 * glyphSize : glyphSize
             height: selected ? 1.5 * glyphSize : glyphSize
 
-            sourceComponent: scatterplot.glyphType === Scatterplot.GlyphType.Normal ? pieGlyph : pieCompareGlyph
+            sourceComponent: root.glyph
         }
     }
 

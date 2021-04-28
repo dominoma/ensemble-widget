@@ -7,6 +7,7 @@ Item {
     property int selectedClustering: 0
     property var colors: ["orange", "red", "cyan", "yellow", "green"]
     property bool selected: false
+    property bool showUncertainty: true
     property int memberId: 0
 
     signal clicked(var mouse, int clusterId, int clusterValue)
@@ -30,7 +31,7 @@ Item {
                     mouse.accepted = true
                     root.clicked(mouse, -1, root.clusterings[root.selectedClustering])
                     return
-                } else if(d < width / 2) {
+                } else if(d < width / 2 && (showUncertainty || root.selected)) {
                     let theta = Math.atan2(dy, dx) + Math.PI / 2;  // angle clockwise from Y-axis, range -π .. π
                     if (theta < 0) {                 // correct to range 0 .. 2π
                         theta += 2.0 * Math.PI;
@@ -56,20 +57,23 @@ Item {
             const centreX = width / 2;
             const centreY = height / 2;
 
-            const data = parent.getPieElements()
+            ctx.clearRect(0, 0, width, height);
 
-            let last = 0
-            for(let el of data) {
-                ctx.beginPath();
-                ctx.fillStyle = colors[el.id];
-                ctx.moveTo(centreX, centreY);
-                const startAngle = Math.PI * 2 * last - Math.PI / 2
-                const endAngle = Math.PI * 2 * (last + el.value) - Math.PI / 2
-                ctx.arc(centreX, centreY, width / 2 - 1, startAngle, endAngle, false);
-                ctx.lineTo(centreX, centreY);
-                ctx.fill();
-                ctx.stroke();
-                last += el.value
+            if(root.showUncertainty || root.selected) {
+                const data = parent.getPieElements()
+                let last = 0
+                for(let el of data) {
+                    ctx.beginPath();
+                    ctx.fillStyle = colors[el.id];
+                    ctx.moveTo(centreX, centreY);
+                    const startAngle = Math.PI * 2 * last - Math.PI / 2
+                    const endAngle = Math.PI * 2 * (last + el.value) - Math.PI / 2
+                    ctx.arc(centreX, centreY, width / 2 - 1, startAngle, endAngle, false);
+                    ctx.lineTo(centreX, centreY);
+                    ctx.fill();
+                    ctx.stroke();
+                    last += el.value
+                }
             }
             ctx.beginPath();
             ctx.fillStyle = colors[clusterings[selectedClustering]]
@@ -96,6 +100,9 @@ Item {
         canvas.requestPaint()
     }
     onColorsChanged: {
+        canvas.requestPaint()
+    }
+    onShowUncertaintyChanged: {
         canvas.requestPaint()
     }
 

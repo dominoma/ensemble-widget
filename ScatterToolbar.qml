@@ -10,6 +10,7 @@ ToolBar {
     property alias selectedClustering: clusteringSpinner.value
     property alias selectedDRAlg: drAlgSelector.currentText
     property alias selectedClusteringAlg: clusteringAlgSelector.currentText
+    property alias uncertaintyEnabled: uncertaintyEnabledBox.checked
 
     RowLayout {
         anchors.fill: parent
@@ -82,6 +83,12 @@ ToolBar {
                 }
                 return ensembleData[0].cluster.map(({ name }) => name)
             }
+        }
+        ToolSeparator {}
+        CheckBox {
+            id: uncertaintyEnabledBox
+            text: "Show Uncertainty"
+
         }
         Label {
             id: footerStatus
