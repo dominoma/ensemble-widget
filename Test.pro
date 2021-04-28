@@ -19,7 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml/qml.qrc
 RESOURCES += data
 
 # Additional import path used to resolve QML modules in Qt Creator's code model

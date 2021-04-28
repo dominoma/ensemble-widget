@@ -1,0 +1,13 @@
+<RCC>
+    <qresource>
+        <file>diagrams/scatterplot/PieCompareGlyph.qml</file>
+        <file>diagrams/scatterplot/PieGlyph.qml</file>
+        <file>diagrams/scatterplot/Scatterplot.qml</file>
+        <file>diagrams/scatterplot/WingletGlyph.qml</file>
+        <file>diagrams/ClusteringRobustness.qml</file>
+        <file>views/DataCategories.qml</file>
+        <file>views/Overview.qml</file>
+        <file>main.qml</file>
+        <file>ScatterToolbar.qml</file>
+    </qresource>
+</RCC>

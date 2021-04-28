@@ -6,6 +6,8 @@ import QtQuick.Shapes 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
+import "views"
+
 ApplicationWindow {
     id: root
     visible: true
@@ -73,9 +75,9 @@ ApplicationWindow {
 
     Component.onCompleted: {
         Promise.all([
-            loadDRData("data/exportSpecPC.txt"),
-            loadClusterData("data/KMeans_5_Clusters_all.txt"),
-            loadClusterData("data/Spectral_8_Clusters_all.txt")]
+            loadDRData("../data/exportSpecPC.txt"),
+            loadClusterData("../data/KMeans_5_Clusters_all.txt"),
+            loadClusterData("../data/Spectral_8_Clusters_all.txt")]
         ).then(([pca, kmeans, spectral]) => {
             ensembleData = pca.map((_, index) => ({
                 dr: [
