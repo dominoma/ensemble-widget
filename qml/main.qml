@@ -36,6 +36,11 @@ ApplicationWindow {
                 text: qsTr("‹")
                 onClicked: stack.pop()
             }
+            ProgressBar {
+                indeterminate: true
+                visible: root.ensembleData.length === 0
+                Layout.fillWidth: true
+            }
             Label {
                 id: footerStatus
                 elide: Label.ElideRight
@@ -72,72 +77,14 @@ ApplicationWindow {
         }
     }
 
+    WorkerScript {
+       id: dataLoader
+       source: "main.mjs"
+       onMessage: root.ensembleData = messageObject
+    }
+
 
     Component.onCompleted: {
-        Promise.all([
-            loadDRData("../data/exportSpecPC.txt"),
-            loadClusterData("../data/KMeans_5_Clusters_all.txt"),
-            loadClusterData("../data/Spectral_8_Clusters_all.txt")]
-        ).then(([pca, kmeans, spectral]) => {
-            ensembleData = pca.map((_, index) => ({
-                dr: [
-                    { name: "PCA", data: pca[index] },
-                    { name: "t-SNE", data: pca[index] },
-                    { name: "UMAP", data: pca[index] }
-                ],
-                cluster: [
-                    { name: "k-Means", data: kmeans[index] },
-                    { name: "Spectral", data: spectral[index] }
-                ]
-            }))
-        })
-    }
-    function loadFile(filename: string) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", filename);
-            xhr.onreadystatechange = () => {
-                if(xhr.readyState === XMLHttpRequest.DONE){
-                    if(xhr.status === 0) {
-                        reject(new Error(xhr.statusText))
-                    } else {
-                        resolve(xhr.responseText)
-                    }
-                }
-            }
-            xhr.onerror = (err) => reject(err)
-            xhr.send();
-        })
-    }
-
-    function loadDRData(filename, ensembleCount = 51) {
-        return loadFile(filename).then((response) => response
-           .split("\n")
-           .map((line, index) => {
-               const match = /cl\d+  \: (.*)\s(.*)/.exec(line)
-               if(!match) { return null }
-               return {
-                   ensemble: index % ensembleCount,
-                   x: parseFloat(match[1]),
-                   y: parseFloat(match[2])
-               }
-           })
-           .reduce((acc, el) => {
-               if(!el) return acc
-               if(!acc[el.ensemble]) acc[el.ensemble] = []
-               acc[el.ensemble].push({ x: el.x, y: el.y })
-               return acc
-           }, []))
-
-    }
-
-    function loadClusterData(filename) {
-        return loadFile(filename).then((response) => {
-            const clusterData = response
-                .split("\n")
-                .filter((el) => !!el)
-                .map((line) => /cl\d+  = \[ ([\d+ ]*) \];/.exec(line)[1].split(' ').map((el) => parseInt(el, 10)))
-            return clusterData[0].map((_, colIndex) => clusterData.map(row => row[colIndex]));
-        })
+        dataLoader.sendMessage()
     }
 }

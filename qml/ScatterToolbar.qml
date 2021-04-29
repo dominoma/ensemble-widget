@@ -51,7 +51,7 @@ ToolBar {
                 if(!ensembleData.length || !selectedClusteringAlg) {
                     return 0
                 }
-                return root.getClusterData(ensembleData[0]).data.length
+                return root.getClusterData(ensembleData[0]).data.length - 1
             }
         }
         ToolSeparator { height: 40 }

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource>
+    <qresource prefix="/">
         <file>diagrams/scatterplot/PieCompareGlyph.qml</file>
         <file>diagrams/scatterplot/PieGlyph.qml</file>
         <file>diagrams/scatterplot/Scatterplot.qml</file>
@@ -9,5 +9,8 @@
         <file>views/Overview.qml</file>
         <file>main.qml</file>
         <file>ScatterToolbar.qml</file>
+        <file>js/dataFunctions.mjs</file>
+        <file>js/munkres.mjs</file>
+        <file>main.mjs</file>
     </qresource>
 </RCC>
