@@ -13,5 +13,6 @@
         <file>main.mjs</file>
         <file>diagrams/robustness/ClusteringRobustness.qml</file>
         <file>diagrams/robustness/ClusterPath.qml</file>
+        <file>diagrams/robustness/ClusterBar.qml</file>
     </qresource>
 </RCC>

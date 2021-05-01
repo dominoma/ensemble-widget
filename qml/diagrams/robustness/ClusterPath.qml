@@ -7,7 +7,8 @@ Item {
     property var clusterings: []
     property int selectedClustering: 0
     property int clusterId: 0
-    property color color
+    property var colors: []
+    property bool showMovement: true
 
     ListModel {
         id: barModel
@@ -17,13 +18,15 @@ Item {
         id: barView
         anchors.fill: parent
         model: barModel
-        delegate: Rectangle {
-            color: root.color
+        delegate: ClusterBar {
+            colors: root.colors
+            showMovement: root.showMovement
+            clusterId: root.clusterId
             x: model.x * root.width
             y: model.y * root.height
             width: model.width * root.width
             height: model.height * root.height
-            border.color: "black"
+            barData: JSON.parse(model.barData)
         }
     }
 
@@ -56,7 +59,8 @@ Item {
                 width,
                 height: 1 / bars.length,
                 x: (1 - width) / 2,
-                y: i / bars.length
+                y: i / bars.length,
+                barData: JSON.stringify(bars[i])
             })
         }
     }

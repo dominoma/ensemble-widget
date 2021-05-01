@@ -9,6 +9,7 @@ Item {
     property int selectedClustering: 0 
     property var colors: []
     property int clusterCount: 5
+    property bool showMovement: true
 
     property var clusterings: getClusterings()
 
@@ -19,7 +20,7 @@ Item {
     Rectangle {
         width: root.width
         height: root.height / root.clusterings.length
-        color: "black"
+        color: "grey"
         y: selectedClustering * height
         z: 1
     }
@@ -30,7 +31,8 @@ Item {
             clusterings: root.clusterings
             selectedClustering: root.selectedClustering
             clusterId: model.clusterId
-            color: root.colors[model.clusterId]
+            showMovement: root.showMovement
+            colors: root.colors
             height: root.height
             width: model.width * root.width
             x: model.x * root.width

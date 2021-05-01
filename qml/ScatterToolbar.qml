@@ -11,6 +11,7 @@ ToolBar {
     property alias selectedDRAlg: drAlgSelector.currentText
     property alias selectedClusteringAlg: clusteringAlgSelector.currentText
     property alias uncertaintyEnabled: uncertaintyEnabledBox.checked
+    property alias showMovement: showMovementBox.checked
 
     Flow {
         anchors.fill: parent
@@ -95,6 +96,12 @@ ToolBar {
         CheckBox {
             id: uncertaintyEnabledBox
             text: "Show Uncertainty"
+            height: 40
+        }
+        ToolSeparator { height: 40 }
+        CheckBox {
+            id: showMovementBox
+            text: "Show Movement"
             height: 40
         }
         Label {

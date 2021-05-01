@@ -10,12 +10,13 @@ Page {
     id: root
     property var ensembleData: []
 
-    readonly property var colors: ["orange", "red", "cyan", "yellow", "green", "pink", "blue", "blueviolet"]
+    readonly property var colors:  ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02", "#a6761d", "#666666"]
 
     header: ScatterToolbar {
         id: toolbar
         ensembleData: root.ensembleData
         uncertaintyEnabled: true
+        showMovement: true
     }
     Scatterplot {
         id: scatterplot
@@ -44,16 +45,21 @@ Page {
             }
         }
     }
-    ClusteringRobustness {
+    Rectangle {
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.left: scatterplot.right
-        anchors.margins: 20
-        ensembleMembers: root.getEnsembleMembers()
-        colors: root.colors
-        selectedClustering: toolbar.selectedClustering
+        color: "lightgrey"
+        ClusteringRobustness {
+            anchors.fill: parent
+            anchors.margins: 20
+            ensembleMembers: root.getEnsembleMembers()
+            colors: root.colors
+            selectedClustering: toolbar.selectedClustering
+            showMovement: toolbar.showMovement
 
+        }
     }
 
     function getEnsembleMembers() {
