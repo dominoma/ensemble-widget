@@ -53,12 +53,25 @@ function loadClusterings(filename) {
             .map((el) => parseInt(el, 10))))
 }
 
+export function transposeMatrix(matrix) {
+    if(matrix.length === 0) {
+        return []
+    }
+
+    return matrix[0].map((_, colIndex) =>
+        matrix.map(row => row[colIndex]))
+}
+export function objFromEntries(entries) {
+    return entries.reduce((acc, [key, val]) => {
+        acc[key] = val
+        return acc
+    }, {})
+}
+
 export function loadClusterData(filename) {
     return loadClusterings(filename)
         .then((clusterings) => optimizeClusterings(clusterings))
-        .then((clusterings) =>
-            clusterings[0].map((_, colIndex) =>
-                clusterings.map(row => row[colIndex])))
+        .then((clusterings) => transposeMatrix(clusterings))
 }
 
 function optimizeClusterings(clusterings) {
