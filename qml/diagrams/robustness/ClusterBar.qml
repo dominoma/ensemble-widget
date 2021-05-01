@@ -7,6 +7,8 @@ Item {
     property bool showMovement: true
     property int clusterId: 0
 
+    signal clicked(var mouse, int clusterId, int clusterValue)
+
     ListModel {
         id: barModel
     }
@@ -16,6 +18,13 @@ Item {
         anchors.fill: parent
         visible: !showMovement
         color: colors[clusterId]
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                root.clicked(mouse, root.clusterId, root.clusterId)
+            }
+        }
     }
 
     Repeater {
@@ -29,6 +38,14 @@ Item {
             height: root.height
             border.color: "black"
             border.width: 0.5
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    root.clicked(mouse, root.clusterId, model.clusterId)
+                }
+            }
         }
     }
 

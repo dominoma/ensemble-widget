@@ -10,6 +10,8 @@ Item {
     property var colors: []
     property bool showMovement: true
 
+    signal clicked(var mouse, int clusterId, int clusterValue, int clusteringId)
+
     ListModel {
         id: barModel
     }
@@ -27,6 +29,10 @@ Item {
             width: model.width * root.width
             height: model.height * root.height
             barData: JSON.parse(model.barData)
+
+            onClicked: {
+                root.clicked(mouse, clusterId, clusterValue, model.clusteringId)
+            }
         }
     }
 
@@ -60,7 +66,8 @@ Item {
                 height: 1 / bars.length,
                 x: (1 - width) / 2,
                 y: i / bars.length,
-                barData: JSON.stringify(bars[i])
+                barData: JSON.stringify(bars[i]),
+                clusteringId: i
             })
         }
     }

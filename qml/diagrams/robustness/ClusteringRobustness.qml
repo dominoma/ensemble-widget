@@ -13,6 +13,8 @@ Item {
 
     property var clusterings: getClusterings()
 
+    signal clicked(var mouse, int clusterId, int clusterValue, int clusteringId)
+
     ListModel {
         id: pathsModel
     }
@@ -37,6 +39,10 @@ Item {
             width: model.width * root.width
             x: model.x * root.width
             z: 2
+
+            onClicked: {
+                root.clicked(mouse, clusterId, clusterValue, clusteringId)
+            }
         }
     }
 

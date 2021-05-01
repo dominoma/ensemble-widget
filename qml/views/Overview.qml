@@ -59,6 +59,10 @@ Page {
             selectedClustering: toolbar.selectedClustering
             showMovement: toolbar.showMovement
 
+            onClicked: {
+                toolbar.selectedClustering = clusteringId
+            }
+
         }
     }
 
