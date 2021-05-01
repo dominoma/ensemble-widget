@@ -19,14 +19,6 @@ Item {
         id: pathsModel
     }
 
-    Rectangle {
-        width: root.width
-        height: root.height / root.clusterings.length
-        color: "grey"
-        y: selectedClustering * height
-        z: 1
-    }
-
     Repeater {
         model: pathsModel
         delegate: ClusterPath {
@@ -38,7 +30,7 @@ Item {
             height: root.height
             width: model.width * root.width
             x: model.x * root.width
-            z: 2
+            z: 20
 
             onClicked: {
                 root.clicked(mouse, clusterId, clusterValue, clusteringId)

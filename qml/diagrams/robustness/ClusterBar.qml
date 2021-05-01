@@ -20,7 +20,7 @@ Item {
         color: colors[clusterId]
         MouseArea {
             anchors.fill: parent
-
+            acceptedButtons: "AllButtons"
             onClicked: {
                 root.clicked(mouse, root.clusterId, root.clusterId)
             }
@@ -41,7 +41,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-
+                acceptedButtons: "AllButtons"
                 onClicked: {
                     root.clicked(mouse, root.clusterId, model.clusterId)
                 }

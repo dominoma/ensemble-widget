@@ -12,10 +12,24 @@ Item {
 
     signal clicked(var mouse, int clusterId, int clusterValue, int clusteringId)
 
+    Rectangle {
+        anchors.fill: parent
+        opacity: 0.5
+        color: colors[clusterId]
+        z: 10
+    }
+
+    Rectangle {
+        width: root.width
+        height: (1 / clusterings.length)*root.height
+        y: selectedClustering * height
+        color: "grey"
+        z: 15
+    }
+
     ListModel {
         id: barModel
     }
-
     Repeater {
         id: barView
         anchors.fill: parent
@@ -24,17 +38,19 @@ Item {
             colors: root.colors
             showMovement: root.showMovement
             clusterId: root.clusterId
-            x: model.x * root.width
-            y: model.y * root.height
-            width: model.width * root.width
-            height: model.height * root.height
+            x: model.x * parent.width
+            y: model.y * parent.height
+            width: model.width * parent.width
+            height: model.height * parent.height
             barData: JSON.parse(model.barData)
+            z: 20
 
             onClicked: {
                 root.clicked(mouse, clusterId, clusterValue, model.clusteringId)
             }
         }
     }
+
 
     onClusteringsChanged: {
         drawBars()

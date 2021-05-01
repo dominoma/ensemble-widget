@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.12
+import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 
 import "../"
@@ -18,51 +18,52 @@ Page {
         uncertaintyEnabled: true
         showMovement: true
     }
-    Scatterplot {
-        id: scatterplot
-        ensembleMembers: root.getEnsembleMembers()
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
+    SplitView {
+        anchors.fill: parent
+        orientation: Qt.Horizontal
+        Frame {
 
-        width: parent.width * 0.7
+            SplitView.minimumWidth: parent.width * 0.3
+            SplitView.preferredWidth: parent.width * 0.7
+            SplitView.maximumWidth: parent.width * 0.8
+            Scatterplot {
+                anchors.fill: parent
+                ensembleMembers: root.getEnsembleMembers()
 
-        selectedMember: toolbar.selectedMember
-        selectedClustering: toolbar.selectedClustering
+                selectedMember: toolbar.selectedMember
+                selectedClustering: toolbar.selectedClustering
 
-        glyph: PieGlyph {
-            selectedClustering: toolbar.selectedClustering
-            clusterings: JSON.parse(parent.clusterings)
-            colors: root.colors
+                glyph: PieGlyph {
+                    selectedClustering: toolbar.selectedClustering
+                    clusterings: JSON.parse(parent.clusterings)
+                    colors: root.colors
 
-            showUncertainty: toolbar.uncertaintyEnabled
+                    showUncertainty: toolbar.uncertaintyEnabled
 
-            selected: parent.selected
-            memberId: parent.memberId
+                    selected: parent.selected
+                    memberId: parent.memberId
 
-            onClicked: {
-                toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
+                    onClicked: {
+                        toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
+                    }
+                }
             }
         }
-    }
-    Rectangle {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.left: scatterplot.right
-        color: "lightgrey"
-        ClusteringRobustness {
-            anchors.fill: parent
-            anchors.margins: 20
-            ensembleMembers: root.getEnsembleMembers()
-            colors: root.colors
-            selectedClustering: toolbar.selectedClustering
-            showMovement: toolbar.showMovement
+        Frame {
 
-            onClicked: {
-                toolbar.selectedClustering = clusteringId
+
+            ClusteringRobustness {
+                anchors.fill: parent
+                ensembleMembers: root.getEnsembleMembers()
+                colors: root.colors
+                selectedClustering: toolbar.selectedClustering
+                showMovement: toolbar.showMovement
+
+                onClicked: {
+                    toolbar.selectedClustering = clusteringId
+                }
+
             }
-
         }
     }
 
