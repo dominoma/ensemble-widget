@@ -14,6 +14,7 @@ ApplicationWindow {
     width: 1000
     height: 720
     title: qsTr("Hello World")
+    visibility: Window.Maximized
     property var ensembleData: []
 
     header: TabBar {

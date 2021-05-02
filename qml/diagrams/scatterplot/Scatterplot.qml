@@ -1,5 +1,7 @@
 import QtQuick 2.0
 
+import "annealing.js" as Annealing
+
 Item {
     id: root
 
@@ -11,12 +13,16 @@ Item {
     property string selectedClusteringAlg: ""
     property Component glyph
 
+    property bool enableAnnealing: true
+
+    property var points: []
+
     onEnsembleMembersChanged: {
         if(ensembleMembers && ensembleMembers.length) {
             const bounds = getBounds()
             const xPos = (x) => (x - bounds.minX) / (bounds.maxX - bounds.minX)
             const yPos = (y) => (y - bounds.minY) / (bounds.maxY - bounds.minY)
-            const points = ensembleMembers.map((member, index) => {
+            root.points = ensembleMembers.map((member, index) => {
                 return {
                     x: xPos(member.dr[0].x),
                     y: yPos(member.dr[0].y),
@@ -24,40 +30,92 @@ Item {
                     clusterings: member.cluster
                 }
             })
-            drawPoints(points)
+            annealPoints()
         }
     }
     ListModel {
         id: pointsModel
     }
-    Rectangle {
-        visible: selectedMember !== -1
+
+    Item {
+        anchors.margins: glyphSize / 2
         anchors.fill: parent
-        color: "white"
-        opacity: 0.8
-        z: 2
+        Rectangle {
+            visible: selectedMember !== -1
+            x: -glyphSize / 2
+            y: -glyphSize / 2
+            width: parent.width + glyphSize
+            height: parent.height + glyphSize
+            color: "white"
+            opacity: 0.8
+            z: 2
+        }
+        Repeater {
+            id: pointsView
+            anchors.fill: parent
+            model: pointsModel
+
+            delegate: Loader {
+                readonly property int memberId: model.index
+                readonly property string clusterings: model.clusterings
+                readonly property bool selected: root.selectedMember === memberId
+
+                x: model.x * pointsView.width - width / 2
+                y: model.y * pointsView.height - height / 2
+                z: selected ? 10 : 1
+                width: selected ? 1.5 * glyphSize : glyphSize
+                height: selected ? 1.5 * glyphSize : glyphSize
+
+                sourceComponent: root.glyph
+
+                onLoaded: {
+                    item.anchors.fill = this
+                }
+            }
+        }
     }
 
-    Repeater {
-        id: pointsView
-        anchors.fill: parent
-        model: pointsModel
-        delegate: Loader {
-            readonly property int memberId: model.index
-            readonly property string clusterings: model.clusterings
-            readonly property bool selected: root.selectedMember === memberId
-
-            x: model.x * (root.width - 2 * glyphSize) + glyphSize - width / 2
-            y: model.y * (root.height - 2 * glyphSize) + glyphSize - height / 2
-            z: selected ? 10 : 1
-            width: selected ? 1.5 * glyphSize : glyphSize
-            height: selected ? 1.5 * glyphSize : glyphSize
-
-            sourceComponent: root.glyph
-
-            onLoaded: {
-                item.anchors.fill = this
+    onWidthChanged: {
+        const currWidth = root.width
+        timer.setTimeout(() => {
+            if(currWidth === root.width) {
+                root.annealPoints()
             }
+        }, 500)
+    }
+
+    Timer {
+        id: timer
+        function setTimeout(cb, delayTime) {
+            timer.interval = delayTime;
+            timer.repeat = false;
+            const handler = () => {
+                timer.triggered.disconnect(handler)
+                cb()
+            }
+
+            timer.triggered.connect(handler);
+            timer.start();
+        }
+    }
+
+    WorkerScript {
+       id: annealing
+       source: "annealing.js"
+       onMessage: drawPoints(messageObject)
+    }
+
+    function annealPoints() {
+        if(enableAnnealing) {
+            annealing.sendMessage({
+                points,
+                scatterWidth: pointsView.width,
+                scatterHeight: pointsView.height,
+                glyphSize: root.glyphSize,
+                iterationCount: 100
+            })
+        } else {
+            drawPoints(points)
         }
     }
 
@@ -72,7 +130,7 @@ Item {
             })
         }
 
-    }
+    } 
 
 
     function getBounds() {

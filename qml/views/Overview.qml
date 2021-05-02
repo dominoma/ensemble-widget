@@ -20,6 +20,7 @@ Page {
     }
     SplitView {
         anchors.fill: parent
+
         orientation: Qt.Horizontal
         Frame {
 
@@ -27,6 +28,7 @@ Page {
             SplitView.preferredWidth: parent.width * 0.7
             SplitView.maximumWidth: parent.width * 0.8
             Scatterplot {
+                id: scatterplot
                 anchors.fill: parent
                 ensembleMembers: root.getEnsembleMembers()
 
