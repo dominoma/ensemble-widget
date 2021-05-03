@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.12
 import "../"
 import "../diagrams/scatterplot"
 import "../diagrams/robustness"
+import "../utils"
 
 Page {
     id: root
@@ -30,6 +31,7 @@ Page {
             Scatterplot {
                 id: scatterplot
                 anchors.fill: parent
+                overrideDrawing: true
                 ensembleMembers: root.getEnsembleMembers()
 
                 selectedMember: toolbar.selectedMember
@@ -49,6 +51,32 @@ Page {
                         toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
                     }
                 }
+
+                onPointsChanged: {
+                    annealing.annealPoints(scatterplot.points)
+                }
+
+                Annealing {
+                    id: annealing
+                    plotWidth: scatterplot.plotWidth
+                    plotHeight: scatterplot.plotHeight
+                    glyphSize: scatterplot.glyphSize
+                    iterationCount: 100
+
+                    onAnnealed: {
+                        scatterplot.drawPoints(points)
+                    }
+                }
+
+                StablePropValue {
+                    propName: "width"
+                    ms: 500
+                    onStableValue: {
+                        annealing.annealPoints(scatterplot.points)
+                    }
+                }
+
+
             }
         }
         Frame {

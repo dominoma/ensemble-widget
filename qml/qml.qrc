@@ -15,5 +15,8 @@
         <file>diagrams/robustness/ClusterPath.qml</file>
         <file>diagrams/robustness/ClusterBar.qml</file>
         <file>diagrams/scatterplot/annealing.js</file>
+        <file>diagrams/scatterplot/Annealing.qml</file>
+        <file>utils/StablePropValue.qml</file>
+        <file>views/WingletView.qml</file>
     </qresource>
 </RCC>

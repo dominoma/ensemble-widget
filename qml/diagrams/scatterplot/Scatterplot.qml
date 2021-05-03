@@ -13,9 +13,12 @@ Item {
     property string selectedClusteringAlg: ""
     property Component glyph
 
-    property bool enableAnnealing: true
-
     property var points: []
+
+    readonly property int plotWidth: width - glyphSize
+    readonly property int plotHeight: height - glyphSize
+
+    property bool overrideDrawing: false
 
     onEnsembleMembersChanged: {
         if(ensembleMembers && ensembleMembers.length) {
@@ -30,9 +33,15 @@ Item {
                     clusterings: member.cluster
                 }
             })
-            annealPoints()
         }
     }
+
+    onPointsChanged: {
+        if(!root.overrideDrawing) {
+            drawPoints(root.points)
+        }
+    }
+
     ListModel {
         id: pointsModel
     }
@@ -72,50 +81,6 @@ Item {
                     item.anchors.fill = this
                 }
             }
-        }
-    }
-
-    onWidthChanged: {
-        const currWidth = root.width
-        timer.setTimeout(() => {
-            if(currWidth === root.width) {
-                root.annealPoints()
-            }
-        }, 500)
-    }
-
-    Timer {
-        id: timer
-        function setTimeout(cb, delayTime) {
-            timer.interval = delayTime;
-            timer.repeat = false;
-            const handler = () => {
-                timer.triggered.disconnect(handler)
-                cb()
-            }
-
-            timer.triggered.connect(handler);
-            timer.start();
-        }
-    }
-
-    WorkerScript {
-       id: annealing
-       source: "annealing.js"
-       onMessage: drawPoints(messageObject)
-    }
-
-    function annealPoints() {
-        if(enableAnnealing) {
-            annealing.sendMessage({
-                points,
-                scatterWidth: pointsView.width,
-                scatterHeight: pointsView.height,
-                glyphSize: root.glyphSize,
-                iterationCount: 100
-            })
-        } else {
-            drawPoints(points)
         }
     }
 
