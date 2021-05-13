@@ -2,8 +2,10 @@ import QtQuick 2.0
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.12
 
+import com.myself 1.0
+
 import "../"
-import "../diagrams/scatterplot"
+import "./overview"
 import "../diagrams/robustness"
 import "../utils"
 
@@ -18,6 +20,10 @@ Page {
         ensembleData: root.ensembleData
         uncertaintyEnabled: true
         showMovement: true
+
+        onUncertaintyEnabledChanged: {
+            scatterCanvas.requestPaint()
+        }
     }
     SplitView {
         anchors.fill: parent
@@ -28,55 +34,17 @@ Page {
             SplitView.minimumWidth: parent.width * 0.3
             SplitView.preferredWidth: parent.width * 0.7
             SplitView.maximumWidth: parent.width * 0.8
-            Scatterplot {
-                id: scatterplot
-                anchors.fill: parent
-                overrideDrawing: true
+            OverviewScatter {
                 ensembleMembers: root.getEnsembleMembers()
-
-                selectedMember: toolbar.selectedMember
+                colors: root.colors
                 selectedClustering: toolbar.selectedClustering
+                selectedMember: toolbar.selectedMember
 
-                glyph: PieGlyph {
-                    selectedClustering: toolbar.selectedClustering
-                    clusterings: JSON.parse(parent.clusterings)
-                    colors: root.colors
+                showUncertainty: toolbar.uncertaintyEnabled
 
-                    showUncertainty: toolbar.uncertaintyEnabled
-
-                    selected: parent.selected
-                    memberId: parent.memberId
-
-                    onClicked: {
-                        toolbar.selectedMember = toolbar.selectedMember === memberId ? -1 : memberId
-                    }
+                onSelectedMemberChanged: {
+                    toolbar.selectedMember = selectedMember
                 }
-
-                onPointsChanged: {
-                    annealing.annealPoints(scatterplot.points)
-                }
-
-                Annealing {
-                    id: annealing
-                    plotWidth: scatterplot.plotWidth
-                    plotHeight: scatterplot.plotHeight
-                    glyphSize: scatterplot.glyphSize
-                    iterationCount: 100
-
-                    onAnnealed: {
-                        scatterplot.drawPoints(points)
-                    }
-                }
-
-                StablePropValue {
-                    propName: "width"
-                    ms: 500
-                    onStableValue: {
-                        annealing.annealPoints(scatterplot.points)
-                    }
-                }
-
-
             }
         }
         Frame {

@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-Item {
+QtObject {
     id: root
     signal annealed(var points)
 
@@ -9,14 +9,15 @@ Item {
     property int glyphSize
     property int iterationCount
 
-    WorkerScript {
-       id: annealing
+    readonly property WorkerScript worker: WorkerScript {
        source: "annealing.js"
        onMessage: root.annealed(messageObject)
+
+
     }
 
     function annealPoints(points) {
-        annealing.sendMessage({
+        worker.sendMessage({
             points,
             scatterWidth: root.plotWidth,
             scatterHeight: root.plotHeight,
@@ -24,4 +25,5 @@ Item {
             iterationCount: root.iterationCount
         })
     }
+
 }

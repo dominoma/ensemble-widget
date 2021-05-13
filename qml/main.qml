@@ -75,6 +75,10 @@ ApplicationWindow {
         }
         Item {
             id: activityTab
+            TextArea {
+                id: textarea
+                anchors.fill: parent
+            }
         }
     }
 
@@ -84,6 +88,11 @@ ApplicationWindow {
        onMessage: root.ensembleData = messageObject
     }
 
+
+
+    onEnsembleDataChanged: {
+        textarea.text = JSON.stringify(root.ensembleData)
+    }
 
     Component.onCompleted: {
         dataLoader.sendMessage()

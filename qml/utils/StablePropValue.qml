@@ -8,20 +8,6 @@ Item {
 
     signal stableValue()
 
-    Component.onCompleted: {
-        const changedEventName = `${propName}Changed`
-        observable[changedEventName].connect(changedHandler)
-    }
-
-    function changedHandler() {
-        const currValue = observable[propName]
-        timer.setTimeout(() => {
-            if(currValue === observable[propName]) {
-                stableValue()
-            }
-        }, ms)
-    }
-
     Timer {
         id: timer
         function setTimeout(cb, delayTime) {
@@ -35,5 +21,19 @@ Item {
             timer.triggered.connect(handler);
             timer.start();
         }
+    }
+
+    Component.onCompleted: {
+        const changedEventName = `${propName}Changed`
+        observable[changedEventName].connect(changedHandler)
+    }
+
+    function changedHandler() {
+        const currValue = observable[propName]
+        timer.setTimeout(() => {
+            if(currValue === observable[propName]) {
+                stableValue()
+            }
+        }, ms)
     }
 }

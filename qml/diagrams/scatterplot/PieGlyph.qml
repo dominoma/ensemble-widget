@@ -9,6 +9,7 @@ Item {
     property bool selected: false
     property bool showUncertainty: true
     property int memberId: 0
+    property var wingletPath: []
 
     signal clicked(var mouse, int clusterId, int clusterValue)
 
@@ -89,9 +90,11 @@ Item {
                 ctx.fillText(root.memberId, width / 2, height / 1.8);
             }
 
-
-
         }
+    }
+
+    onWingletPathChanged: {
+        canvas.requestPaint()
     }
     onClusteringsChanged: {
         canvas.requestPaint()
